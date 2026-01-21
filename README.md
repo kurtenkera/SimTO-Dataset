@@ -57,7 +57,7 @@ The following 8 file types are found in each of the sub-directories:
 
 ## Inspecting the Data in Python
 
-You can use the following snippet to load a design and visualize its structure (include code snippets which you've verified with your own data)
+You can use the following snippet to load a design and visualize its 2D structure:
 
 ```python
 import numpy as np
@@ -69,41 +69,63 @@ file_path = 'object_01/design_01/D1_1D_binary.npy'
 # Load the binary design
 design = np.load(file_path)
 
-# Reshape to 2D (150 rows, 70 columns)
-# Note: Ensure the reshape dimensions match your optimization grid
-design_2d = design.reshape((150, 70), order = 'C')
+# Reshape to 2D 70mm x 150mm design
+design_2d = design.reshape((70,150), order = 'F')
 
 # Visualization
 plt.figure(figsize=(6, 10))
-plt.imshow(design_2d, cmap='grayscale')
+plt.imshow(-design_2d, cmap='gray', interpolation='none')
 plt.title('SimTO Optimized Design (Binary)')
-plt.xlabel('Width')
-plt.ylabel('Height')
 plt.show()
 ```
 
-The following snippet can be used to plot `cps2maxforces_2D` or `cps2maxforces_2D`  on a given volumetric mesh (.msh):
+The following snippet can be used to plot `cps2maxforces_2D` or `cps2maxforces_3D`  on a given volumetric mesh (.msh):
 
 ```python
-def plot_mesh_and_CPs(self, title: str, CPs: np.ndarray, forces: np.ndarray, 
-                        mesh_filepath: str, save_filepath: str = None):
+def view_gripper_contact_forces(CPs: np.ndarray, forces: np.ndarray, mesh_filepath: str):
 
     pv_mesh = pv.read(mesh_filepath)
 
-    pl = pv.Plotter(off_screen=True)  # Off-screen rendering needed for saving PNG
+    pl = pv.Plotter(off_screen=False)  # Off-screen rendering needed for saving PNG
     pl.add_axes()
-    pl.add_title(title, font_size=20)
+    pl.add_title("Force Visualization", font_size=10)
     pl.add_mesh(pv_mesh, color='green', opacity=0.2, show_edges=True, 
                 edge_color='black', line_width=0.5)
     pl.add_points(CPs, color='red', point_size=10)
-    pl.add_arrows(CPs, forces, mag=self.animation_force_mag, show_scalar_bar=False, color='purple')
+    pl.add_arrows(CPs, forces, mag=0.01, show_scalar_bar=False, color='purple')
 
+    pl.camera_position = [
+    (0.1505324065755239, 0.05274239401650542, 0.3468997346157137),
+    (0.08956819058431202, 0.017612153403596703, 0.008684541917199706),
+    (0.26854190818118046, 0.9519416621297155, -0.14728311326192445)
+    ]
 
-    if save_filepath:
-        pl.screenshot(save_filepath)  # Save as PNG
-    else:
-        pl.show()
-    return
+    pl.show()
+
+cps2maxforces_2D_filepath = os.path.join("hourglass_run45/cps2maxforces_2D_D2.npy")
+cps2maxforces_2D = np.load(cps2maxforces_2D_filepath, allow_pickle=True).item()
+
+cps2maxforces_3D_filepath = os.path.join("hourglass_run45/cps2maxforces_3D_D2.npy")
+cps2maxforces_3D = np.load(cps2maxforces_3D_filepath, allow_pickle=True).item()
+
+CPs_2D = np.array(list(cps2maxforces_2D.keys()))
+CPs_3D = np.array(list(cps2maxforces_3D.keys()))
+
+forces_2D = np.array(list(cps2maxforces_2D.values()))
+forces_3D = np.array(list(cps2maxforces_3D.values()))
+
+mesh_filepath = "hourglass_run45/D2_leftfinger.msh"
+
+#view_gripper_contact_forces(CPs_3D, forces_3D, mesh_filepath)
+#view_gripper_contact_forces(CPs_2D, forces_2D, mesh_filepath)
+
+print(CPs_2D.shape, CPs_3D.shape)
+print(forces_2D.shape, forces_2D)
+print(forces_3D.shape, forces_3D)
+
+# These 2D forces have +x and -y components, with 0 z-component as explained in the paper.
+# Also, 8 < 36 due to down-sampling. Other strategies could be tested for obtaining useful forces for SimTO, but this one worked nicely.
 ```
 
-This code performed on this particular design (pick a design - verify that your dataset matches the results in your Paper 1 table).
+This code performed on the second hourglass design from Table 1 in our [paper](https://kurtenkera.github.io/SimTO/) returns the following plot of 3D forces. (show plot). 
+It also shows these downsampled 2D forces - which are used for 2D simulation-based topology optimization.
