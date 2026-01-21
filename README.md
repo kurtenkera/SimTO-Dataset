@@ -39,25 +39,25 @@ SimTO-Dataset/
 
 ## File Breakdown
 
-The following 8 file types are found in each of the subdirectories: 
+The following 8 file types are found in each of the sub-directories: 
 
-### 1. Contact Force Distributions used for SimTO design optimization
+### Contact Force Distributions used for SimTO design optimization
 * **`cps2maxforces_3D_Di.npy`**: A Python dictionary mapping $\tilde{N}_f$ 3D contact points on the left soft finger to 3D contact forces for the $i$ th simulated design.
 * **`cps2maxforces_2D_Di.npy`**: A Python dictionary mapping $N_f \leq \tilde{N}_f$ 2D contact points on the left soft finger to 3D contact forces for the $i$ th simulated design.
 * **`Di_2D_Forces.png`**: A visualization of the `cps2maxforces_2D` forces plotted on their associated contact points for the $i$ th design.
 
-### 2. Design Representations
+### Design Representations
 * **`Di_1D_binary.npy`**: A $(10500,)$ numpy array of 1s and 0s representing the final optimized design (reshapable to $150 \times 70$).
 * **`Di_iteration_j.png`**: A 2D plot of the `Di_1D_binary.npy` at iteration $j$.
 * **`Di_3D_binary.npy`**: A $(150, 70, 30)$ numpy array of 1s and 0s representing the optimized design extruded with a thickness of 30mm.
 
-### 3. Geometry & Fabrication
+### Geometry & Fabrication
 * **`Di_leftfinger.msh`**: Volumetric mesh of the $i$ th soft finger used for simulation in [**Taccel**](https://taccel-simulator.github.io/).
 * **`Di_leftfinger.stl`**: STL file of the voxelized volumetric mesh, ready for 3D printing and physical validation.
 
 ## Inspecting the Data in Python
 
-You can use the following snippet to load a design and visualize its structure:
+You can use the following snippet to load a design and visualize its structure (include code snippets which you've verified with your own data)
 
 ```python
 import numpy as np
@@ -71,11 +71,11 @@ design = np.load(file_path)
 
 # Reshape to 2D (150 rows, 70 columns)
 # Note: Ensure the reshape dimensions match your optimization grid
-design_2d = design.reshape(150, 70)
+design_2d = design.reshape((150, 70), order = 'C')
 
 # Visualization
 plt.figure(figsize=(6, 10))
-plt.imshow(design_2d, cmap='gray_r')
+plt.imshow(design_2d, cmap='grayscale')
 plt.title('SimTO Optimized Design (Binary)')
 plt.xlabel('Width')
 plt.ylabel('Height')
@@ -105,3 +105,5 @@ def plot_mesh_and_CPs(self, title: str, CPs: np.ndarray, forces: np.ndarray,
         pl.show()
     return
 ```
+
+This code performed on this particular design (pick a design - verify that your dataset matches the results in your Paper 1 table).
