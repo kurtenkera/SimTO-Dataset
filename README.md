@@ -48,7 +48,7 @@ The following 8 file types are found in each of the sub-directories:
 
 ### Design Representations
 * **`Di_1D_binary.npy`**: A $(70*150,)$ numpy array of 1s and 0s representing the $i$ th design.
-* **`Di_iteration_j.png`**: A 2D plot of `Di_1D_binary.npy` at iteration `j`.
+* **`Di_iteration_j.png`**: A 2D plot of `Di_1D_binary.npy` at iteration `j` of simulation-based topology optimization.
 * **`Di_3D_binary.npy`**: A $(70, 150, 30)$ numpy array of 1s and 0s representing the $i$ th design extruded with a thickness of 30mm.
 
 ### Geometry & Fabrication
