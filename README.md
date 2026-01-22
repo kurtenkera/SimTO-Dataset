@@ -47,7 +47,7 @@ The following 8 file types are found in each of the sub-directories:
 * **`Di_2D_Forces.png`**: A visualization of the contact forces from `cps2maxforces_2D_Di.npy` for the $i$ th design.
 
 ### Design Representations
-* **`Di_1D_binary.npy`**: A $(70*150,)$ numpy array of 1s and 0s representing the $i$ th design (reshapable to $70 \times 150$).
+* **`Di_1D_binary.npy`**: A $(70*150,)$ numpy array of 1s and 0s representing the $i$ th design.
 * **`Di_iteration_j.png`**: A 2D plot of `Di_1D_binary.npy` at iteration `j`.
 * **`Di_3D_binary.npy`**: A $(70, 150, 30)$ numpy array of 1s and 0s representing the $i$ th design extruded with a thickness of 30mm.
 
