@@ -92,7 +92,7 @@ cps2maxforces = np.load(cps2maxforces_filepath, allow_pickle=True).item()
 # Defining CPs and forces from the Python dictionary
 CPs = np.array(list(cps2maxforces.keys()))
 forces = np.array(list(cps2maxforces.values()))
-mesh_filepath = "object_01/run_01//D2_leftfinger.msh"
+mesh_filepath = "object_01/run_01/D2_leftfinger.msh"
 
 # Plotting forces using Pyvista
 pv_mesh = pv.read(mesh_filepath)
